@@ -28,9 +28,9 @@ A compiler for the ћ++ programming language, a C-like language with UTF-8 suppo
 
 ```
 // Example program
-екстерно испиши(порука);
+екстерна putchar(порука);
 
-низ:4: бројеви = _1, 2, 3, 4_;
+низ:3: бројеви = _1, 2, 3_;
 
 сума(низ:н: аргументи) <
     резултат = 0;

@@ -47,6 +47,12 @@ OBJ_FILES_DEBUG = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/debug/%.o,$(SRC_FILES))
 OBJ_FILES_RELEASE = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/release/%.o,$(SRC_FILES))
 TEST_OBJ_FILES = $(patsubst $(TEST_DIR)/%.c,$(BUILD_DIR)/test/%.o,$(TEST_FILES))
 
+# UTF-8 Test files
+UTF8_TEST_SRC = $(TEST_DIR)/utf8_tests.c
+UTF8_TEST_OBJ = $(BUILD_DIR)/test/utf8_tests.o
+UTF8_UTILS_SRC = $(SRC_DIR)/utils/utf8.c
+UTF8_UTILS_OBJ = $(BUILD_DIR)/debug/utils/utf8.o
+
 # Output binary
 TARGET = ћпп
 
@@ -85,11 +91,18 @@ test: $(OBJ_FILES_DEBUG) $(TEST_OBJ_FILES)
 	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o $(TARGET)_test $^
 	./$(TARGET)_test
 
+# UTF-8 Test build
+test-utf8: CFLAGS = $(CFLAGS_DEBUG)
+test-utf8: $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/test/utf8_tests.o
+	@echo "Building and running UTF-8 tests ($(WORD_SIZE)-bit)..."
+	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o utf8_test $^
+	./utf8_test
+
 # Clean build files
 clean:
 	@echo "Cleaning build files..."
 	rm -rf $(BUILD_DIR)
-	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test
+	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test utf8_test
 
 # Install
 install: release
@@ -105,10 +118,11 @@ help:
 	@echo "  debug:     Build with debug symbols and no optimization"
 	@echo "  release:   Build optimized release version"
 	@echo "  test:      Build and run tests"
+	@echo "  test-utf8: Build and run only UTF-8 tests"
 	@echo "  clean:     Remove build files"
 	@echo "  install:   Install the compiler to /usr/local/bin/"
 	@echo "  help:      Show this help message"
 	@echo ""
 	@echo "Architecture: $(ARCH) ($(WORD_SIZE)-bit word size)"
 
-.PHONY: all debug release test clean install help
+.PHONY: all debug release test test-utf8 clean install help

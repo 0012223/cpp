@@ -1,0 +1,37 @@
+# Build artifacts
+build/
+*.o
+*.out
+*.exe
+
+# Compiler outputs
+ћпп
+ћпп_debug
+ћпп_test
+utf8_test
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Dependency directories
+/vendor/
+/node_modules/
+
+# Documentation generated files
+/doc/
+
+# Temporary files
+/tmp/
+/temp/

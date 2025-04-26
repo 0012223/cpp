@@ -30,10 +30,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-// Forward declarations of compiler component headers
+// Include needed compiler components
+#include "utils/utf8.h"
+// Other includes will be uncommented as they are implemented
 // #include "utils/error.h"
 // #include "target/target_info.h"
-// Will be uncommented when these components are implemented
 
 // Compiler configuration structure
 typedef struct {
