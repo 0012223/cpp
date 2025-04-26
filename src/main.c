@@ -34,7 +34,7 @@
 #include "utils/utf8.h"
 // Other includes will be uncommented as they are implemented
 #include "utils/error.h"
-// #include "target/target_info.h"
+#include "target/target_info.h"
 
 // Compiler configuration structure
 typedef struct {
@@ -226,6 +226,198 @@ bool process_args(int argc, char* argv[], CompilerConfig* config) {
     return true;
 }
 
+// Function to execute compiler pipeline stages
+bool run_compiler_pipeline(CompilerConfig* config, TargetInfo* target_info) {
+    // This function will coordinate all the compilation phases
+    // and handle stopping after specific phases if requested
+    
+    FILE* input_file = fopen(config->input_file, "r");
+    if (!input_file) {
+        error_report(ERROR_IO, ERROR_FATAL, config->input_file, 0, 0, 
+                    "Could not open input file", 
+                    "Check that the file exists and you have read permissions", 
+                    __FILE__, __LINE__);
+        return false;
+    }
+    
+    // TODO: Implement lexical analysis phase
+    // LexerState* lexer = lexer_init(input_file, config->input_file);
+    // if (!lexer) {
+    //     error_report(ERROR_INTERNAL, ERROR_FATAL, config->input_file, 0, 0, 
+    //                 "Failed to initialize lexer", 
+    //                 "Check that the file is valid", 
+    //                 __FILE__, __LINE__);
+    //     fclose(input_file);
+    //     return false;
+    // }
+    
+    // If we're stopping after lexing, print token stream and exit
+    if (config->stop_after_lexing) {
+        if (config->verbose) {
+            printf("Stopping after lexical analysis as requested\n");
+        }
+        // TODO: lexer_print_all_tokens(lexer);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return true;
+    }
+    
+    // TODO: Implement parsing phase
+    // ASTNode* ast_root = parser_parse(lexer);
+    // if (!ast_root) {
+    //     error_report(ERROR_SYNTAX, ERROR_FATAL, config->input_file, 0, 0, 
+    //                 "Failed to parse input file", 
+    //                 "Check for syntax errors", 
+    //                 __FILE__, __LINE__);
+    //     lexer_cleanup(lexer);
+    //     fclose(input_file);
+    //     return false;
+    // }
+    
+    // If we're stopping after parsing, print AST and exit
+    if (config->stop_after_parsing) {
+        if (config->verbose) {
+            printf("Stopping after syntax analysis as requested\n");
+        }
+        // TODO: ast_print(ast_root);
+        // ast_cleanup(ast_root);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return true;
+    }
+    
+    // TODO: Implement semantic analysis phase
+    // SymbolTable* symbol_table = symbol_table_init();
+    // if (!semantic_analyzer_check(ast_root, symbol_table)) {
+    //     error_report(ERROR_SEMANTIC, ERROR_FATAL, config->input_file, 0, 0, 
+    //                 "Semantic analysis failed", 
+    //                 "Check for type errors or undefined variables", 
+    //                 __FILE__, __LINE__);
+    //     symbol_table_cleanup(symbol_table);
+    //     ast_cleanup(ast_root);
+    //     lexer_cleanup(lexer);
+    //     fclose(input_file);
+    //     return false;
+    // }
+    
+    // If we're stopping after semantic analysis, exit
+    if (config->stop_after_semantic) {
+        if (config->verbose) {
+            printf("Stopping after semantic analysis as requested\n");
+        }
+        // symbol_table_cleanup(symbol_table);
+        // ast_cleanup(ast_root);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return true;
+    }
+    
+    // TODO: Implement IR generation
+    // IRProgram* ir_program = ir_generate(ast_root, symbol_table, target_info);
+    // if (!ir_program) {
+    //     error_report(ERROR_INTERNAL, ERROR_FATAL, config->input_file, 0, 0, 
+    //                 "IR generation failed", 
+    //                 "This may be due to an internal compiler error", 
+    //                 __FILE__, __LINE__);
+    //     symbol_table_cleanup(symbol_table);
+    //     ast_cleanup(ast_root);
+    //     lexer_cleanup(lexer);
+    //     fclose(input_file);
+    //     return false;
+    // }
+    
+    // Apply optimization if requested
+    if (config->optimization_level > 0) {
+        if (config->verbose) {
+            printf("Optimizing IR at level O%d\n", config->optimization_level);
+        }
+        // TODO: ir_optimize(ir_program, config->optimization_level);
+    }
+    
+    // If we're stopping after IR generation, print IR and exit
+    if (config->stop_after_ir) {
+        if (config->verbose) {
+            printf("Stopping after IR generation as requested\n");
+        }
+        // TODO: ir_print(ir_program);
+        // ir_cleanup(ir_program);
+        // symbol_table_cleanup(symbol_table);
+        // ast_cleanup(ast_root);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return true;
+    }
+    
+    // TODO: Generate target code
+    FILE* output_file = fopen(config->output_file, "w");
+    if (!output_file) {
+        error_report(ERROR_IO, ERROR_FATAL, config->output_file, 0, 0, 
+                    "Could not create output file", 
+                    "Check write permissions in the target directory", 
+                    __FILE__, __LINE__);
+        // ir_cleanup(ir_program);
+        // symbol_table_cleanup(symbol_table);
+        // ast_cleanup(ast_root);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return false;
+    }
+    
+    // Select code generator based on target architecture
+    bool codegen_result = false;
+    switch (target_info->arch) {
+        case TARGET_ARCH_X86:
+            if (config->verbose) {
+                printf("Generating x86 (32-bit) assembly code\n");
+            }
+            // TODO: codegen_result = codegen_x86_generate(ir_program, output_file, config->generate_assembly);
+            break;
+            
+        case TARGET_ARCH_X86_64:
+            if (config->verbose) {
+                printf("Generating x86-64 (64-bit) assembly code\n");
+            }
+            // TODO: codegen_result = codegen_x86_64_generate(ir_program, output_file, config->generate_assembly);
+            break;
+            
+        default:
+            error_report(ERROR_CODEGEN, ERROR_FATAL, config->input_file, 0, 0, 
+                        "Unsupported target architecture for code generation", 
+                        "Use a supported architecture like x86 or x86-64", 
+                        __FILE__, __LINE__);
+            codegen_result = false;
+            break;
+    }
+    
+    if (!codegen_result) {
+        error_report(ERROR_CODEGEN, ERROR_FATAL, config->input_file, 0, 0, 
+                    "Code generation failed", 
+                    "Check for internal compiler errors in the previous messages", 
+                    __FILE__, __LINE__);
+        fclose(output_file);
+        // ir_cleanup(ir_program);
+        // symbol_table_cleanup(symbol_table);
+        // ast_cleanup(ast_root);
+        // lexer_cleanup(lexer);
+        fclose(input_file);
+        return false;
+    }
+    
+    // Clean up resources
+    fclose(output_file);
+    // ir_cleanup(ir_program);
+    // symbol_table_cleanup(symbol_table);
+    // ast_cleanup(ast_root);
+    // lexer_cleanup(lexer);
+    fclose(input_file);
+    
+    if (config->verbose) {
+        printf("Successfully generated output: %s\n", config->output_file);
+    }
+    
+    return true;
+}
+
 // Main entry point
 int main(int argc, char* argv[]) {
     // Parse command line arguments
@@ -242,20 +434,67 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     
-    // TODO: Implement the rest of the compiler pipeline
-    // 2. Detect target architecture
-    // 3. Read input file
-    // 4. Run lexical analysis (stopping if requested)
-    // 5. Run syntax analysis (stopping if requested)
-    // 6. Run semantic analysis (stopping if requested)
-    // 7. Generate IR (stopping if requested)
-    // 8. Optimize IR
-    // 9. Generate target code
-    // 10. Output result file
+    // Detect and initialize target architecture
+    TargetInfo target_info;
+    if (config.target_arch != NULL) {
+        // User specified target architecture
+        TargetArchitecture arch = TARGET_ARCH_UNKNOWN;
+        
+        if (strcmp(config.target_arch, "x86") == 0) {
+            arch = TARGET_ARCH_X86;
+        } else if (strcmp(config.target_arch, "x86-64") == 0) {
+            arch = TARGET_ARCH_X86_64;
+        }
+        
+        if (arch == TARGET_ARCH_UNKNOWN) {
+            error_report(ERROR_INTERNAL, ERROR_FATAL, config.input_file, 0, 0,
+                        "Unsupported target architecture", 
+                        "Use x86 or x86-64 as target architecture",
+                        __FILE__, __LINE__);
+            error_cleanup();
+            return 1;
+        }
+        
+        target_info = target_init_arch(arch);
+    } else {
+        // Auto-detect target architecture
+        target_info = target_init();
+    }
+    
+    // Verify target architecture was properly detected
+    if (target_info.arch == TARGET_ARCH_UNKNOWN) {
+        error_report(ERROR_INTERNAL, ERROR_FATAL, config.input_file, 0, 0,
+                    "Failed to detect or initialize target architecture",
+                    "This may be due to an unsupported platform",
+                    __FILE__, __LINE__);
+        error_cleanup();
+        return 1;
+    }
+    
+    if (config.verbose) {
+        printf("Target architecture: %s (%d-bit)\n", 
+               target_architecture_to_string(target_info.arch),
+               target_info.word_size * 8);
+        printf("Word size: %d bytes\n", target_info.word_size);
+        printf("Pointer size: %d bytes\n", target_info.pointer_size);
+        printf("Stack alignment: %d bytes\n", target_info.stack_alignment);
+        printf("Assembly syntax: %s\n", target_info.asm_syntax);
+        printf("Calling convention: %s\n", 
+               target_info.calling_convention.type == CALLING_CONV_CDECL ? 
+               "cdecl" : "System V AMD64 ABI");
+    }
+    
+    // Run the compiler pipeline
+    bool success = run_compiler_pipeline(&config, &target_info);
     
     // Clean up error handling system before exiting
     error_cleanup();
     
-    printf("Compilation successful\n");
-    return 0;
+    if (success) {
+        printf("Compilation successful\n");
+        return 0;
+    } else {
+        printf("Compilation failed\n");
+        return 1;
+    }
 }
