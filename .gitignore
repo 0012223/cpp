@@ -7,8 +7,8 @@ build/
 # Compiler outputs
 ћпп
 ћпп_debug
-ћпп_test
-utf8_test
+*_test
+ћпп_error_log_*
 
 # Editor files
 .vscode/

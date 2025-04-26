@@ -53,6 +53,12 @@ UTF8_TEST_OBJ = $(BUILD_DIR)/test/utf8_tests.o
 UTF8_UTILS_SRC = $(SRC_DIR)/utils/utf8.c
 UTF8_UTILS_OBJ = $(BUILD_DIR)/debug/utils/utf8.o
 
+# Error Test files
+ERROR_TEST_SRC = $(TEST_DIR)/error_tests.c
+ERROR_TEST_OBJ = $(BUILD_DIR)/test/error_tests.o
+ERROR_UTILS_SRC = $(SRC_DIR)/utils/error.c
+ERROR_UTILS_OBJ = $(BUILD_DIR)/debug/utils/error.o
+
 # Output binary
 TARGET = ћпп
 
@@ -98,11 +104,19 @@ test-utf8: $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/test/utf8_tests.o
 	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o utf8_test $^
 	./utf8_test
 
+# Error handling Test build
+test-error: CFLAGS = $(CFLAGS_DEBUG)
+test-error: $(BUILD_DIR)/debug/utils/error.o $(BUILD_DIR)/test/error_tests.o
+	@echo "Building and running error handling tests ($(WORD_SIZE)-bit)..."
+	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o error_test $^
+	./error_test
+
 # Clean build files
 clean:
 	@echo "Cleaning build files..."
 	rm -rf $(BUILD_DIR)
-	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test utf8_test
+	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test utf8_test error_test
+	rm -f ћпп_error_log_*.txt
 
 # Install
 install: release
@@ -114,15 +128,16 @@ help:
 	@echo "ћ++ Compiler Makefile"
 	@echo "---------------------"
 	@echo "Targets:"
-	@echo "  all:       Alias for 'release'"
-	@echo "  debug:     Build with debug symbols and no optimization"
-	@echo "  release:   Build optimized release version"
-	@echo "  test:      Build and run tests"
-	@echo "  test-utf8: Build and run only UTF-8 tests"
-	@echo "  clean:     Remove build files"
-	@echo "  install:   Install the compiler to /usr/local/bin/"
-	@echo "  help:      Show this help message"
+	@echo "  all:        Alias for 'release'"
+	@echo "  debug:      Build with debug symbols and no optimization"
+	@echo "  release:    Build optimized release version"
+	@echo "  test:       Build and run tests"
+	@echo "  test-utf8:  Build and run only UTF-8 tests"
+	@echo "  test-error: Build and run only error handling tests"
+	@echo "  clean:      Remove build files"
+	@echo "  install:    Install the compiler to /usr/local/bin/"
+	@echo "  help:       Show this help message"
 	@echo ""
 	@echo "Architecture: $(ARCH) ($(WORD_SIZE)-bit word size)"
 
-.PHONY: all debug release test test-utf8 clean install help
+.PHONY: all debug release test test-utf8 test-error clean install help

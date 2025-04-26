@@ -33,7 +33,7 @@
 // Include needed compiler components
 #include "utils/utf8.h"
 // Other includes will be uncommented as they are implemented
-// #include "utils/error.h"
+#include "utils/error.h"
 // #include "target/target_info.h"
 
 // Compiler configuration structure
@@ -46,6 +46,7 @@ typedef struct {
     bool stop_after_semantic;   // Stop after semantic analysis
     bool stop_after_ir;         // Stop after IR generation
     bool verbose;               // Verbose output
+    bool generate_error_log;    // Generate error log file
     char* target_arch;          // Target architecture (x86 or x86-64)
     int optimization_level;     // Optimization level (0-3)
 } CompilerConfig;
@@ -60,6 +61,7 @@ void print_help(const char* program_name) {
     printf("  --target=<arch>        Target architecture (x86, x86-64, default: current machine)\n");
     printf("  -O<level>              Optimization level (0-3, default: 0)\n");
     printf("  --verbose              Verbose output\n");
+    printf("  --generate-error-log    Generate error log file\n");
     printf("  --stop-after-lexing    Stop after lexical analysis\n");
     printf("  --stop-after-parsing   Stop after syntax analysis\n");
     printf("  --stop-after-semantic  Stop after semantic analysis\n");
@@ -82,6 +84,7 @@ bool process_args(int argc, char* argv[], CompilerConfig* config) {
     config->stop_after_semantic = false;
     config->stop_after_ir = false;
     config->verbose = false;
+    config->generate_error_log = false;
     config->target_arch = NULL;
     config->optimization_level = 0;
     
@@ -145,6 +148,10 @@ bool process_args(int argc, char* argv[], CompilerConfig* config) {
         }
         else if (strcmp(argv[i], "--stop-after-ir") == 0) {
             config->stop_after_ir = true;
+        }
+        // Handle generate error log flag
+        else if (strcmp(argv[i], "--generate-error-log") == 0) {
+            config->generate_error_log = true;
         }
         // Assume anything else is an input file
         else if (config->input_file == NULL) {
@@ -229,8 +236,13 @@ int main(int argc, char* argv[]) {
     
     printf("ћ++ compiler: processing file %s\n", config.input_file);
     
-    // TODO: Implement the compiler pipeline
-    // 1. Initialize error handling system
+    // Initialize error handling system with log file option
+    if (!error_init_with_log(config.generate_error_log)) {
+        fprintf(stderr, "Failed to initialize error handling system\n");
+        return 1;
+    }
+    
+    // TODO: Implement the rest of the compiler pipeline
     // 2. Detect target architecture
     // 3. Read input file
     // 4. Run lexical analysis (stopping if requested)
@@ -240,6 +252,9 @@ int main(int argc, char* argv[]) {
     // 8. Optimize IR
     // 9. Generate target code
     // 10. Output result file
+    
+    // Clean up error handling system before exiting
+    error_cleanup();
     
     printf("Compilation successful\n");
     return 0;
