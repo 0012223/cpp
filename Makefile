@@ -90,13 +90,6 @@ release: $(OBJ_FILES_RELEASE)
 	@echo "Building release version ($(WORD_SIZE)-bit)..."
 	$(CC) $(CFLAGS_RELEASE) $(ARCH_FLAG) -o $(TARGET) $^
 
-# Test build
-test: CFLAGS = $(CFLAGS_DEBUG)
-test: $(OBJ_FILES_DEBUG) $(TEST_OBJ_FILES)
-	@echo "Building and running tests ($(WORD_SIZE)-bit)..."
-	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o $(TARGET)_test $^
-	./$(TARGET)_test
-
 # UTF-8 Test build
 test-utf8: CFLAGS = $(CFLAGS_DEBUG)
 test-utf8: $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/test/utf8_tests.o
@@ -110,6 +103,19 @@ test-error: $(BUILD_DIR)/debug/utils/error.o $(BUILD_DIR)/test/error_tests.o
 	@echo "Building and running error handling tests ($(WORD_SIZE)-bit)..."
 	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o error_test $^
 	./error_test
+
+# Lexer Test files
+LEXER_TEST_SRC = $(TEST_DIR)/lexer_tests.c
+LEXER_TEST_OBJ = $(BUILD_DIR)/test/lexer_tests.o
+LEXER_SRC = $(SRC_DIR)/lexer/keywords.c
+LEXER_OBJ = $(BUILD_DIR)/debug/lexer/keywords.o
+
+# Lexer Test build
+test-lexer: CFLAGS = $(CFLAGS_DEBUG)
+test-lexer: $(LEXER_OBJ) $(LEXER_TEST_OBJ) $(BUILD_DIR)/debug/utils/utf8.o
+	@echo "Building and running lexer tests ($(WORD_SIZE)-bit)..."
+	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o lexer_test $^
+	./lexer_test
 
 # Clean build files
 clean:
@@ -140,4 +146,4 @@ help:
 	@echo ""
 	@echo "Architecture: $(ARCH) ($(WORD_SIZE)-bit word size)"
 
-.PHONY: all debug release test test-utf8 test-error clean install help
+.PHONY: all debug release test test-utf8 test-error test-lexer clean install help

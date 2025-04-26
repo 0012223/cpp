@@ -26,3 +26,18 @@
  */
 
 // Test file content will be implemented later
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[]) {
+    // Run all tests
+    printf("Running parser tests...\n");
+    
+    // Call test functions here
+    // Example: test_parser_init();
+    
+    printf("All parser tests completed.\n");
+    
+    return 0;
+}

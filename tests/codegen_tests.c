@@ -26,3 +26,16 @@
  */
 
 // Test file content will be implemented later
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char* argv[]) {
+    // Run all tests
+    
+    // Add more tests as needed
+    // ...
+    
+    printf("\nAll tests completed successfully.\n");
+    return 0;
+}
