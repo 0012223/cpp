@@ -59,6 +59,14 @@ ERROR_TEST_OBJ = $(BUILD_DIR)/test/error_tests.o
 ERROR_UTILS_SRC = $(SRC_DIR)/utils/error.c
 ERROR_UTILS_OBJ = $(BUILD_DIR)/debug/utils/error.o
 
+# AST Test files
+AST_TEST_SRC = $(TEST_DIR)/ast_tests.c
+AST_TEST_OBJ = $(BUILD_DIR)/test/ast_tests.o
+
+# Parser Test files
+PARSER_TEST_SRC = $(TEST_DIR)/parser_tests.c
+PARSER_TEST_OBJ = $(BUILD_DIR)/test/parser_tests.o
+
 # Output binary
 TARGET = ћпп
 
@@ -112,16 +120,30 @@ LEXER_OBJ = $(BUILD_DIR)/debug/lexer/keywords.o
 
 # Lexer Test build
 test-lexer: CFLAGS = $(CFLAGS_DEBUG)
-test-lexer: $(LEXER_OBJ) $(LEXER_TEST_OBJ) $(BUILD_DIR)/debug/utils/utf8.o
+test-lexer: $(LEXER_OBJ) $(LEXER_TEST_OBJ) $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/debug/utils/error.o $(BUILD_DIR)/debug/target/target_info.o $(BUILD_DIR)/debug/lexer/lexer.o
 	@echo "Building and running lexer tests ($(WORD_SIZE)-bit)..."
 	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o lexer_test $^
 	./lexer_test
+
+# AST Test build
+test-ast: CFLAGS = $(CFLAGS_DEBUG)
+test-ast: $(AST_TEST_OBJ) $(BUILD_DIR)/debug/parser/ast.o $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/debug/utils/error.o $(BUILD_DIR)/debug/target/target_info.o $(BUILD_DIR)/debug/lexer/lexer.o $(BUILD_DIR)/debug/lexer/keywords.o
+	@echo "Building and running AST tests ($(WORD_SIZE)-bit)..."
+	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o ast_test $^
+	./ast_test
+
+# Parser Test build
+test-parser: CFLAGS = $(CFLAGS_DEBUG)
+test-parser: $(PARSER_TEST_OBJ) $(BUILD_DIR)/debug/parser/ast.o $(BUILD_DIR)/debug/parser/parser.o $(BUILD_DIR)/debug/utils/utf8.o $(BUILD_DIR)/debug/utils/error.o $(BUILD_DIR)/debug/target/target_info.o $(BUILD_DIR)/debug/lexer/lexer.o $(BUILD_DIR)/debug/lexer/keywords.o
+	@echo "Building and running parser tests ($(WORD_SIZE)-bit)..."
+	$(CC) $(CFLAGS_DEBUG) $(ARCH_FLAG) -o parser_test $^
+	./parser_test
 
 # Clean build files
 clean:
 	@echo "Cleaning build files..."
 	rm -rf $(BUILD_DIR)
-	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test utf8_test error_test
+	rm -f $(TARGET) $(TARGET)_debug $(TARGET)_test utf8_test error_test lexer_test ast_test parser_test
 	rm -f ћпп_error_log_*.txt
 
 # Install
@@ -140,10 +162,13 @@ help:
 	@echo "  test:       Build and run tests"
 	@echo "  test-utf8:  Build and run only UTF-8 tests"
 	@echo "  test-error: Build and run only error handling tests"
+	@echo "  test-lexer: Build and run only lexer tests"
+	@echo "  test-ast:   Build and run only AST tests"
+	@echo "  test-parser: Build and run only parser tests"
 	@echo "  clean:      Remove build files"
 	@echo "  install:    Install the compiler to /usr/local/bin/"
 	@echo "  help:       Show this help message"
 	@echo ""
 	@echo "Architecture: $(ARCH) ($(WORD_SIZE)-bit word size)"
 
-.PHONY: all debug release test test-utf8 test-error test-lexer clean install help
+.PHONY: all debug release test test-utf8 test-error test-lexer test-ast test-parser clean install help

@@ -1,33 +1,14 @@
-// Example ћ++ program demonstrating language features
-// Filename: main.ћпп
+екстерно putchar;
 
-// External function declaration
-екстерно испиши(порука);
-
-// Array declaration and initialization
-низ:4: бројеви = _1, 2, 3, 4_;
-
-// Helper function that calculates the sum of an array
-сума(низ:н: аргументи) <
-    резултат = 0;
-    и = 0;
-    
-    док (и < н) <
-        резултат = резултат + аргументи:и:;
-        и = и + 1;
-    >
-    
-    врати резултат;
->
-
-// Main function - entry point of the program
 главна() <
-    // Calculate sum of the array
-    збир = сума(бројеви);
-    
-    // Print the result
-    испиши(збир);
-    
-    // Return success code
-    врати 0;
+    *показивач;
+
+    број = 3;
+
+    показивач = &број;
+
+    *број = *број + 1;
+
+    putchar(број);
+    putchar('\n');
 >

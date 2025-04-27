@@ -243,8 +243,7 @@ int utf8_strcmp(const char* str1, const char* str2) {
 
 /*
  * Check if a Unicode code point is alphabetic.
- * This is a simplified implementation that covers
- * basic Latin and Cyrillic ranges.
+ * This implementation covers common script ranges used in programming identifiers.
  */
 bool utf8_is_alphabetic(utf8_codepoint_t codepoint) {
     /* Basic Latin (A-Z, a-z) */
@@ -253,23 +252,63 @@ bool utf8_is_alphabetic(utf8_codepoint_t codepoint) {
         return true;
     }
     
-    /* Cyrillic (Ѐ-ԯ) */
+    /* Cyrillic (Ѐ-ԯ) - full range including extensions */
     if (codepoint >= 0x0400 && codepoint <= 0x04FF) {
         return true;
     }
     
-    /* Extended Cyrillic (Ѐ-ӿ) */
-    if (codepoint >= 0x0400 && codepoint <= 0x04FF) {
+    /* Extended Cyrillic B */
+    if (codepoint >= 0x0500 && codepoint <= 0x052F) {
         return true;
     }
     
-    /* Serbian-specific characters (ћ, ђ, etc.) */
-    if (codepoint == 0x045B || codepoint == 0x0452 ||
-        codepoint == 0x045F || codepoint == 0x0458) {
+    /* Greek and Coptic */
+    if (codepoint >= 0x0370 && codepoint <= 0x03FF) {
         return true;
     }
     
-    /* Additional special characters used in the ћ++ language */
+    /* Latin Extended-A */
+    if (codepoint >= 0x0100 && codepoint <= 0x017F) {
+        return true;
+    }
+    
+    /* Latin Extended-B */
+    if (codepoint >= 0x0180 && codepoint <= 0x024F) {
+        return true;
+    }
+    
+    /* Latin Extended Additional */
+    if (codepoint >= 0x1E00 && codepoint <= 0x1EFF) {
+        return true;
+    }
+    
+    /* Arabic */
+    if (codepoint >= 0x0600 && codepoint <= 0x06FF) {
+        return true;
+    }
+    
+    /* Hebrew */
+    if (codepoint >= 0x0590 && codepoint <= 0x05FF) {
+        return true;
+    }
+    
+    /* Hiragana and Katakana */
+    if ((codepoint >= 0x3040 && codepoint <= 0x309F) ||  /* Hiragana */
+        (codepoint >= 0x30A0 && codepoint <= 0x30FF)) {  /* Katakana */
+        return true;
+    }
+    
+    /* CJK Unified Ideographs (basic) */
+    if (codepoint >= 0x4E00 && codepoint <= 0x9FFF) {
+        return true;
+    }
+    
+    /* Devanagari */
+    if (codepoint >= 0x0900 && codepoint <= 0x097F) {
+        return true;
+    }
+    
+    /* Additional special characters specific to ћ++ */
     /* Add any other specific alphabetic characters needed */
     
     return false;

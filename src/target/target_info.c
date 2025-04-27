@@ -189,6 +189,7 @@ TargetInfo target_init_arch(TargetArchitecture arch) {
     info.word_size = target_get_word_size(arch);
     info.pointer_size = info.word_size;  // Pointer size is typically the same as word size
     info.big_endian = false;  // x86 and x86-64 are little-endian
+    info.endianness = ENDIAN_LITTLE;  // x86 and x86-64 are little-endian
     
     // Get register and calling convention information
     info.registers = target_get_register_info(arch);

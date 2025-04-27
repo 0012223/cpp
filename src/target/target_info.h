@@ -36,6 +36,12 @@ typedef enum {
     TARGET_ARCH_UNKNOWN  // Unknown or unsupported architecture
 } TargetArchitecture;
 
+// Endianness types
+typedef enum {
+    ENDIAN_LITTLE,       // Little-endian byte order
+    ENDIAN_BIG           // Big-endian byte order
+} Endianness;
+
 // Calling convention types
 typedef enum {
     CALLING_CONV_CDECL,      // Standard C calling convention (x86)
@@ -70,7 +76,8 @@ typedef struct {
     RegisterInfo registers;        // Available registers
     CallingConventionInfo calling_convention; // Default calling convention
     const char* asm_syntax;        // Assembly syntax (e.g., "intel", "att")
-    bool big_endian;               // Endianness (true for big-endian, false for little-endian)
+    bool big_endian;               // Endianness flag (true for big-endian, false for little-endian)
+    Endianness endianness;         // Endianness (ENDIAN_LITTLE or ENDIAN_BIG)
 } TargetInfo;
 
 /**

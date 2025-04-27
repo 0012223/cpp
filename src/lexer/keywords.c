@@ -22,36 +22,11 @@
  * - Case sensitivity is enforced for keywords
  */
 
+#include "lexer.h"
 #include "../utils/utf8.h"
 #include <string.h>
 #include <stdbool.h>
 #include <stdio.h>
-
-// Define Token Types if not defined in lexer.h
-// This is a placeholder until we have the complete lexer.h
-typedef enum {
-    // Control flow keywords
-    TOKEN_IF,            // ако
-    TOKEN_ELSE,          // иначе
-    TOKEN_WHILE,         // док
-    TOKEN_FOR,           // за
-    TOKEN_DO,            // ради
-    // TOKEN_SWITCH,        // избор
-    // TOKEN_CASE,          // случај
-    // TOKEN_DEFAULT,       // подразумевано
-    TOKEN_BREAK,         // прекини
-    // TOKEN_CONTINUE,      // настави
-    TOKEN_RETURN,        // врати
-    
-    // Module/scope keywords
-    TOKEN_EXTERNAL,      // екстерно
-    
-    // Boolean literals
-    TOKEN_TRUE,          // тачно
-    TOKEN_FALSE,         // нетачно
-    
-    TOKEN_KEYWORD_LAST   // Marker for the last keyword token
-} TokenType;
 
 // Keyword struct maps a keyword string to its token type
 typedef struct {
